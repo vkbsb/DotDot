@@ -11,10 +11,16 @@ var dir = 1;
 var rotSpeed = 2
 var score = 0
 var scoreLabel
+var crosshair
+var chInstance
+var bestScore
 
 func _ready():
 	# Called every time the node is added to the scene.
 	# Initialization here
+	crosshair = load("res://scenes/crosshair.scn")
+	chInstance = null
+	
 	player = get_node("player")
 	set_process_input(true)
 	set_fixed_process(true)
@@ -30,6 +36,9 @@ func _ready():
 	placeNextTarget()
 	
 	get_tree().set_pause(true)
+	
+	#load the best score from file.
+	bestScore = self.get_option("score", "best", 0)
 	pass
 
 func placeNextTarget():
@@ -56,11 +65,21 @@ func _input(event):
 			#circles do not overlap. GameOver
 			get_node("ui/GameOver").show()
 			get_node("ui/GameOver/Button/AnimationPlayer").play("buttonAppear")
+			if bestScore < score:
+				set_option("score", "best", score)
+				bestScore = score
+			get_node("ui/GameOver/best").set_text("Best: " + str(bestScore))
 			get_tree().set_pause(true)
 			pass
 		else: #circles overlap
+			get_node("target1/Label").hide()
+			if chInstance:
+				chInstance.get_node("AnimationPlayer").play("hide")
+				chInstance = null
+				
 			#show the fake target fading out.
-			outObj.set_pos(player.get_pos())
+			var indx = (player.get_target_index() + 1) % 2
+			outObj.set_pos(target[indx].get_pos())
 			outObj.show()
 			outObj.get_node("AnimationPlayer").play("fadeout")
 			
@@ -68,10 +87,18 @@ func _input(event):
 			player.set_pos(npos)
 			player.change_center()
 			placeNextTarget()
-			
+
 			#change the direction of rotation.
 			dir *= -1
-			
+			if tr-cr > npos.distance_to(tpos):
+				#circle was inside. play +1 animation
+				self.score += 1
+				var node = crosshair.instance()
+				var indx = (player.get_target_index() + 1) % 2
+				node.set_pos(target[indx].get_pos())
+				add_child(node)
+				chInstance = node
+				
 			self.score += 1
 			self.scoreLabel.set_text(str(self.score))
 			
@@ -86,3 +113,15 @@ func play_clicked():
 
 func play_again_clicked():
 	get_tree().reload_current_scene()
+	
+func get_option(section, key, default):
+    var config = ConfigFile.new()
+    config.load("user://config.ini")
+    var value = config.get_value(section, key, default)
+    return value
+
+func set_option(section, key, value):
+    var config = ConfigFile.new()
+    config.load("user://config.ini")
+    config.set_value(section, key, value)
+    config.save("user://config.ini")
