@@ -14,3 +14,6 @@ func remove_from_parent():
 	print("removing")
 	self.get_parent().remove_child(self)
 
+func _exit_tree():
+	self.queue_free()
+
