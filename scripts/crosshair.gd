@@ -1,9 +1,4 @@
-
 extends Sprite
-
-# member variables here, example:
-# var a=2
-# var b="textvar"
 
 func _ready():
 	# Called every time the node is added to the scene.
@@ -17,3 +12,8 @@ func remove_from_parent():
 func _exit_tree():
 	self.queue_free()
 
+func play_appear():
+	$AnimationPlayer.play("appear")
+
+func play_hide():
+	$AnimationPlayer.play("hide")
