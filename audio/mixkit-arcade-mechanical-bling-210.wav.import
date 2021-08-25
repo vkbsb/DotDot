@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/mixkit-arcade-mechanical-bling-210.wav-95fb568b8b9bdc9b6ea13e7e84fe4ebc.sample"
+
+[deps]
+
+source_file="res://audio/mixkit-arcade-mechanical-bling-210.wav"
+dest_files=[ "res://.import/mixkit-arcade-mechanical-bling-210.wav-95fb568b8b9bdc9b6ea13e7e84fe4ebc.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

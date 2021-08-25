@@ -17,17 +17,26 @@ func _ready():
 	
 	target_index = 1
 	direction = 1
-
-	circle_radius = $Ring/Circle1/Sprite2.get_rect().size.x / 2 * $Ring/Circle1/Sprite2.scale.x
+	
+	circle_radius = $Ring/Circle1/Sprite.get_rect().size.x / 2 * $Ring/Circle1/Sprite.scale.x
 	
 	switchCircle()
+	
+	
+	ColorPalette.register_sprite($Ring/Circle1/dot_indicator, 3)
+	ColorPalette.register_sprite($Ring/Circle1/Sprite, 1)
+	ColorPalette.register_sprite($Ring/Circle2/dot_indicator, 3)
+	ColorPalette.register_sprite($Ring/Circle2/Sprite, 1)
+	ColorPalette.apply_current()
+	
 	pass # Replace with function body.
 
-func _process(delta):
+func on_update(delta):
 	rotation += delta*direction*rot_speed
+	pass
 
 func get_next_pos():
-	return targets[target_index].global_position
+	return targets[(target_index+1)%2].global_position
 	
 func get_ring_radius():
 	return $Ring.get_rect().size.x/2
@@ -37,17 +46,18 @@ func switchCircle():
 	targets[target_index].position = Vector2(0, 2*offset)
 	targets[(target_index+1)%2].position = Vector2(0, 0)
 	$Ring.offset.y = offset
+	$AudioStreamPlayer2D.play()
 	
-func _input(event):
-	if event.is_action_pressed("ui_accept"):
+func on_input(event):
+	if event.is_action_pressed("ui_select"):
 		direction *= -1
 		position = targets[target_index].global_position
 		target_index += 1
 		target_index %= 2
 		switchCircle()
 		
-	if event.is_action_pressed("ui_right"):
-		print("Rotation", rotation)
-		rotation += 0.05
+#	if event.is_action_pressed("ui_right"):
+#		print("Rotation", rotation)
+#		rotation += 0.05
 #		print("Pffset:", offset)
 		

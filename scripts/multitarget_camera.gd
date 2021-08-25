@@ -16,7 +16,7 @@ var targets = []  # Array of targets to be tracked.
 
 onready var screen_size = get_viewport_rect().size
 
-func _process(delta):
+func _process(_delta):
 	if !targets:
 		return
 	# Keep the camera centered between the targets
